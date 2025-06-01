@@ -8,3 +8,20 @@ body {
   font-family: 'DM Sans', sans-serif;
   scroll-behavior: smooth;
 }
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(134, 134, 134, 0.15);
+}
+ 
+::-webkit-scrollbar-thumb {
+  background: #193af5; 
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3d5aff; 
+}

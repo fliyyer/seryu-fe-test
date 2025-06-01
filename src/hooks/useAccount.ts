@@ -9,7 +9,7 @@ export const useAccount = () => {
     return useQuery({
         queryKey: ["account"],
         queryFn: async () => {
-            if (!sessionId) throw new Error("Tidak ada session ID");
+            if (!sessionId) throw new Error("No session ID");
             return await getAccountDetails(sessionId);
         },
         enabled: !!sessionId,
@@ -21,17 +21,17 @@ export const useMarkAsFavorite = () => {
 
     return useMutation({
         mutationFn: async ({ media_id, favorite }: { media_id: number; favorite: boolean }) => {
-            if (!sessionId) throw new Error("Tidak ada session ID");
+            if (!sessionId) throw new Error("No session ID");
             return await markAsFavorite(sessionId, media_id, favorite);
         },
         onSuccess: (_data, variables) => {
             const message = variables.favorite
-                ? "Ditambahkan ke daftar favorit!"
-                : "Dihapus dari daftar favorit!";
+                ? "Added to favorites!"
+                : "Removed from favorites!";
             showSuccess(message);
             QueryClient.invalidateQueries({ queryKey: ["favorite-movies"] });
         },
-        onError: () => showError("Harap login untuk mengubah daftar favorit"),
+        onError: () => showError("Please log in to change favorite list"),
     })
 };
 
@@ -41,17 +41,17 @@ export const useAddToWatchlist = () => {
 
     return useMutation({
         mutationFn: async ({ media_id, watchlist }: { media_id: number; watchlist: boolean }) => {
-            if (!sessionId) throw new Error("Tidak ada session ID");
+            if (!sessionId) throw new Error("No session ID");
             return await addToWatchlist(sessionId, media_id, watchlist);
         },
         onSuccess: (_data, variables) => {
             const message = variables.watchlist
-                ? "Ditambahkan ke daftar watchlist!"
-                : "Dihapus dari daftar watchlist!";
+                ? "Added to watchlist!"
+                : "Removed from watchlist!";
             showSuccess(message);
             queryClient.invalidateQueries({ queryKey: ["watchlist-movies"] });
         },
-        onError: () => showError("Harap login untuk mengubah daftar watchlist"),
+        onError: () => showError("Please log in to change watchlist"),
     });
 };
 
@@ -60,7 +60,7 @@ export const useGetFavoriteMovies = () => {
     return useQuery({
         queryKey: ["favorite-movies"],
         queryFn: async () => {
-            if (!sessionId) throw new Error("Tidak ada session ID");
+            if (!sessionId) throw new Error("No session ID");
             return await getFavoriteMovies(sessionId);
         },
         enabled: !!sessionId,

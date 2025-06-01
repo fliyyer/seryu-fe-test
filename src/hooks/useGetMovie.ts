@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getMovieDetail, getNowPlaying, getTopRated } from "../api/movieService";
+import { getMovieDetail, getNowPlaying, getTopRated, searchMovies } from "../api/movieService";
+import type { GetMovie } from "../types/movie";
 
 export const useNowPlaying = (page: number = 1) => {
     return useQuery({
@@ -25,5 +26,16 @@ export const useMovieDetail = (id: string) => {
         queryFn: () => getMovieDetail(id),
         enabled: !!id,
         staleTime: 1000 * 60 * 5,
+    });
+}
+
+export const useGetMovieSuggestions = (query: string) => {
+    return useQuery<GetMovie[]>({
+        queryKey: ['movie-suggestions', query],
+        queryFn: () => searchMovies(query),
+        enabled: query.trim().length > 0,
+        staleTime: 1000 * 60 * 5,
+        select: (data) => data.slice(0, 8),
+        retry: 1,
     });
 }

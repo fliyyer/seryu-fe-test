@@ -1,9 +1,9 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Homepage from "./pages/home-page"
 import MovieDetailPage from "./pages/movie-detail-page"
-import AuthCallback from "./pages/AuthCallback"
+import AuthCallback from "./pages/auth-callback"
 import FavoritePage from "./pages/favorite-page"
-import WatchlistPage from "./pages/WatchlistPage"
+import WatchlistPage from "./pages/watchlist-page"
 import ProtectedRoute from "./pages/protected-route"
 
 const router = createBrowserRouter([

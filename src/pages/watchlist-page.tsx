@@ -23,13 +23,13 @@ const WatchlistPage = () => {
                 {isEmpty ? (
                     <div className="flex flex-col items-center justify-center text-center py-20 text-gray-600">
                         <FaRegBookmark className="text-6xl mb-4 text-gray-400" />
-                        <p className="text-xl font-medium">Watchlist kosong</p>
-                        <p className="text-sm mt-1">Belum ada film yang ditambahkan ke watchlist kamu.</p>
+                        <p className="text-xl font-medium">Watchlist empty</p>
+                        <p className="text-sm mt-1">No movies found in your watchlist.</p>
                         <Link
                             to="/"
                             className="mt-6 inline-block px-5 py-2 bg-gray-800 text-white text-sm rounded-lg hover:bg-gray-700 transition"
                         >
-                            Jelajahi Film
+                            Explore Movies
                         </Link>
                     </div>
                 ) : (

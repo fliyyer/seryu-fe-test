@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { getRequestToken, createSessionId, deleteSessionId } from "../api/auth";
 import { showError, showSuccess } from "../lib/toast";
 
-// Authentication status hook
 export const useAuthStatus = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
@@ -17,7 +16,6 @@ export const useAuthStatus = () => {
     return { isAuthenticated, isLoading };
 };
 
-// Request token hook
 export const useRequestToken = () => {
     return useMutation({
         mutationFn: getRequestToken,
@@ -25,7 +23,6 @@ export const useRequestToken = () => {
     });
 };
 
-// Create session hook
 export const useCreateSession = () => {
     const queryClient = useQueryClient();
 
@@ -40,7 +37,6 @@ export const useCreateSession = () => {
     });
 };
 
-// Logout hook
 export const useLogout = () => {
     const queryClient = useQueryClient();
 

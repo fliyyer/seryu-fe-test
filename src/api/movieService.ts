@@ -36,4 +36,13 @@ export const getRecommendations = async (id: string) => {
     return res.data.results;
 };
 
-
+export const searchMovies = async (query: string) => {
+    const response = await tmdb.get('/search/movie', {
+        params: {
+            query: query,
+            language: 'en-US',
+            include_adult: false,
+        }
+    });
+    return response.data.results;
+}
