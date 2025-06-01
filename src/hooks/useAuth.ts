@@ -1,59 +1,85 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { tmdb } from "../api/tmdb";
 import { useEffect, useState } from "react";
+import { getRequestToken, createSessionId, deleteSessionId } from "../api/auth";
+import { showError, showSuccess } from "../lib/toast";
 
-const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
-
-
-export const useRequestToken = () => {
-    return useMutation({
-        mutationFn: async () => {
-            const res = await tmdb.get(`/authentication/token/new?api_key=${API_KEY}`);
-            return res.data.request_token;
-        },
-    });
-};
-
-export const useCreateSession = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async (requestToken: string) => {
-            const res = await tmdb.post(`/authentication/session/new?api_key=${API_KEY}`, {
-                request_token: requestToken,
-            });
-            localStorage.setItem("tmdb_session_id", res.data.session_id);
-            queryClient.invalidateQueries();
-            return res.data.session_id;
-        },
-    });
-};
-
-export const useLogout = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: async () => {
-            const sessionId = localStorage.getItem("tmdb_session_id");
-            if (!sessionId) throw new Error("No session ID found");
-
-            await tmdb.delete(`/authentication/session?api_key=${API_KEY}`, {
-                data: { session_id: sessionId },
-            });
-            localStorage.removeItem("tmdb_session_id");
-            queryClient.invalidateQueries();
-        },
-    });
-};
-
-export const useAuthenticated = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(true);
+// Authentication status hook
+export const useAuthStatus = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         const sessionId = localStorage.getItem("tmdb_session_id");
-        if (sessionId) {
-            setIsAuthenticated(true);
-        }
-        setLoading(false);
+        setIsAuthenticated(!!sessionId);
+        setIsLoading(false);
     }, []);
+
+    return { isAuthenticated, isLoading };
+};
+
+// Request token hook
+export const useRequestToken = () => {
+    return useMutation({
+        mutationFn: getRequestToken,
+        onError: () => showError("Gagal membuat token"),
+    });
+};
+
+// Create session hook
+export const useCreateSession = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: createSessionId,
+        onSuccess: (sessionId) => {
+            localStorage.setItem("tmdb_session_id", sessionId);
+            queryClient.invalidateQueries();
+            showSuccess("Login berhasil");
+        },
+        onError: () => showError("Gagal membuat sesi"),
+    });
+};
+
+// Logout hook
+export const useLogout = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: async () => {
+            const sessionId = localStorage.getItem("tmdb_session_id");
+            if (!sessionId) throw new Error("Tidak ada sesi");
+            await deleteSessionId(sessionId);
+            localStorage.removeItem("tmdb_session_id");
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries();
+            showSuccess("Logout berhasil");
+        },
+        onError: () => showError("Gagal logout"),
+    });
+};
+
+
+export const useAuthenticated = () => {
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const checkAuth = () => {
+            const sessionId = localStorage.getItem("tmdb_session_id");
+            setIsAuthenticated(!!sessionId);
+            setLoading(false);
+        };
+
+        checkAuth();
+
+        const handleStorageChange = () => checkAuth();
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
+
     return { isAuthenticated, loading };
-}
+};

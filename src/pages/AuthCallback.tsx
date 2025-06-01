@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCreateSession } from "../hooks/useAuth";
-import { showError, showSuccess } from "../lib/toast";
+import { showError } from "../lib/toast";
+import LoadingSpinner from "../components/loading-spinner";
 
 const AuthCallback = () => {
     const { search } = useLocation();
@@ -15,16 +16,8 @@ const AuthCallback = () => {
 
         if (approved === "true" && requestToken) {
             createSession.mutate(requestToken, {
-                onSuccess: (sessionId) => {
-                    localStorage.setItem("tmdb_session_id", sessionId);
-                    showSuccess("Login successful");
-
-                    if (window.opener) {
-                        window.opener.postMessage("tmdb_login_success", "*");
-                        window.close();
-                    } else {
-                        navigate("/");
-                    }
+                onSuccess: () => {
+                    navigate("/");
                 },
                 onError: () => {
                     showError("Failed to create session.");
@@ -35,9 +28,17 @@ const AuthCallback = () => {
             showError("Authorization failed or denied.");
             navigate("/");
         }
-    }, [search, createSession, navigate]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    return <p>Authenticating...</p>;
+    return (
+        <div className="h-screen flex justify-center items-center text-xl text-gray-700">
+            <div className="flex flex-col items-center space-y-4">
+                <LoadingSpinner />
+                <span>Authenticating with TMDB...</span>
+            </div>
+        </div>
+    );
 };
 
 export default AuthCallback;

@@ -10,7 +10,7 @@ const ProtectedRoute = () => {
         if (!loading && !isAuthenticated) {
             toast.error("You must log in to access this page.", {
                 position: "top-right",
-                autoClose: 3000,
+                autoClose: 2000,
             });
         }
     }, [loading, isAuthenticated]);

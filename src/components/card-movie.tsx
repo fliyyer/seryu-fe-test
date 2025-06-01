@@ -1,11 +1,10 @@
-import { FaHeart, FaBookmark } from 'react-icons/fa';
+import { FaHeart, FaRegHeart, FaBookmark, FaRegBookmark } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import Tmdb from '../assets/imdb.png';
 import Ceri from '../assets/ceri.png';
 import type { CardMovieProps } from '../types/movie';
 import { genreMap } from '../constant/genre';
-import { useAddToWatchlist, useMarkAsFavorite } from '../hooks/useAccount';
-
+import { useFavoriteWatchlistActions } from '../hooks/useAccount';
 
 const CardMovie = ({
     id,
@@ -15,21 +14,11 @@ const CardMovie = ({
     vote_average,
     vote_count,
     genre_ids = [],
-}: CardMovieProps & { genre_ids?: number[] }) => {
-    const genres = genre_ids.map((id) => genreMap[id]).filter(Boolean).join(', ');
-
-    const favoriteMutation = useMarkAsFavorite();
-    const watchlistMutation = useAddToWatchlist();
-
-    const handleFavorite = (e: React.MouseEvent) => {
-        e.preventDefault();
-        favoriteMutation.mutate({ media_id: id, favorite: true });
-    };
-
-    const handleWatchlist = (e: React.MouseEvent) => {
-        e.preventDefault();
-        watchlistMutation.mutate({ media_id: id, watchlist: true });
-    };
+    is_favorite = false,
+    is_watchlist = false,
+}: CardMovieProps) => {
+    const { handleFavorite, handleWatchlist } = useFavoriteWatchlistActions(id);
+    const genres = genre_ids.map(id => genreMap[id]).filter(Boolean).join(', ');
 
     return (
         <Link
@@ -44,16 +33,22 @@ const CardMovie = ({
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex justify-center items-center gap-4 transition-opacity duration-300">
                     <button
-                        className="bg-white hover:bg-gray-200 text-red-600 p-2 rounded-full shadow"
-                        onClick={handleFavorite}
+                        className={`bg-white hover:bg-gray-200 text-red-600 p-2 rounded-full shadow`}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleFavorite(!is_favorite);
+                        }}
                     >
-                        <FaHeart size={18} />
+                        {is_favorite ? <FaHeart size={18} /> : <FaRegHeart size={18} />}
                     </button>
                     <button
                         className="bg-white hover:bg-gray-200 text-blue-600 p-2 rounded-full shadow"
-                        onClick={handleWatchlist}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleWatchlist(!is_watchlist);
+                        }}
                     >
-                        <FaBookmark size={18} />
+                        {is_watchlist ? <FaBookmark size={18} /> : <FaRegBookmark size={18} />}
                     </button>
                 </div>
             </div>
@@ -75,7 +70,7 @@ const CardMovie = ({
                         </span>
                     </div>
                     <div className="flex items-center gap-1">
-                        <img src={Ceri} alt="Ceri" className="w-4 h-4 object-contain" />
+                        <img src={Ceri} alt="Ceri" className="size-4 object-contain" />
                         <span>{vote_count}</span>
                     </div>
                 </div>

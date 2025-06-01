@@ -1,40 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useRequestToken, useLogout } from '../hooks/useAuth';
+import { useAuthHandlers } from '../hooks/useAuthHandlers';
 
 const Navbar = () => {
     const [search, setSearch] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
-
-    const requestToken = useRequestToken();
-    const logout = useLogout();
+    const { handleLogin, handleLogout } = useAuthHandlers();
 
     useEffect(() => {
         const session = localStorage.getItem("tmdb_session_id");
         setIsLoggedIn(!!session);
     }, []);
-
-
-    const handleLogin = () => {
-        requestToken.mutate(undefined, {
-            onSuccess: (token) => {
-                const url = `https://www.themoviedb.org/authenticate/${token}?redirect_to=http://localhost:5173/auth/callback`;
-                window.location.href = url;
-            },
-            onError: () => alert("Failed to create request token."),
-        });
-    };
-
-
-    const handleLogout = () => {
-        logout.mutate(undefined, {
-            onSuccess: () => {
-                alert("Logged out");
-                setIsLoggedIn(false);
-            },
-        });
-    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -61,7 +38,9 @@ const Navbar = () => {
                     <Link to="/watchlist" className="text-gray-700 hover:text-blue-600 font-medium">Watchlist</Link>
                     {isLoggedIn ? (
                         <button
-                            onClick={handleLogout}
+                            onClick={() => {
+                                handleLogout(() => setIsLoggedIn(false));
+                            }}
                             className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md"
                         >
                             Logout

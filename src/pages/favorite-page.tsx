@@ -2,12 +2,12 @@ import { Link } from "react-router-dom";
 import CardMovie from "../components/card-movie";
 import LoadingSpinner from "../components/loading-spinner";
 import Navbar from "../components/navbar";
-import { useFavoriteWatchlistStatus, useGetWatchlistMovies } from "../hooks/useAccount";
+import { useFavoriteWatchlistStatus, useGetFavoriteMovies } from "../hooks/useAccount";
 import type { GetMovie } from "../types/movie";
-import { FaRegBookmark } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa";
 
-const WatchlistPage = () => {
-    const { data = [], isLoading } = useGetWatchlistMovies();
+const FavoritePage = () => {
+    const { data = [], isLoading } = useGetFavoriteMovies();
     const { markMovies } = useFavoriteWatchlistStatus();
     const datas = markMovies(data);
     if (isLoading) return <LoadingSpinner />;
@@ -18,13 +18,13 @@ const WatchlistPage = () => {
             <Navbar />
             <div className="max-w-7xl mx-auto px-4 py-8 lg:px-0">
                 <h1 className="text-4xl text-gray-900 font-bold mb-6">
-                    Watchlist Movies
+                    Favorite Movies
                 </h1>
                 {isEmpty ? (
                     <div className="flex flex-col items-center justify-center text-center py-20 text-gray-600">
-                        <FaRegBookmark className="text-6xl mb-4 text-gray-400" />
-                        <p className="text-xl font-medium">Watchlist kosong</p>
-                        <p className="text-sm mt-1">Belum ada film yang ditambahkan ke watchlist kamu.</p>
+                        <FaRegHeart className="text-6xl mb-4 text-gray-400" />
+                        <p className="text-xl font-medium">Favorite kosong</p>
+                        <p className="text-sm mt-1">Belum ada film yang ditambahkan ke favorite kamu.</p>
                         <Link
                             to="/"
                             className="mt-6 inline-block px-5 py-2 bg-gray-800 text-white text-sm rounded-lg hover:bg-gray-700 transition"
@@ -44,4 +44,4 @@ const WatchlistPage = () => {
     );
 };
 
-export default WatchlistPage;
+export default FavoritePage;

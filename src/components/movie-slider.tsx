@@ -1,8 +1,7 @@
+import { HiChevronLeft, HiChevronRight } from "react-icons/hi";
 import type { MovieSliderProps } from "../types/movie";
 import CardMovie from "./card-movie";
 import { useRef } from "react";
-
-
 
 const MovieSlider = ({ title, movies }: MovieSliderProps) => {
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -20,20 +19,20 @@ const MovieSlider = ({ title, movies }: MovieSliderProps) => {
         <section className="mb-12">
             <div className="flex items-center justify-between mb-5 px-2">
                 <h2 className="text-4xl font-bold">{title}</h2>
-                <div className="space-x-2">
+                <div className="space-x-2 flex items-center">
                     <button
                         onClick={() => scroll("left")}
-                        className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 transition"
+                        className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 hover:bg-gray-400 shadow transition duration-200"
                         aria-label="Scroll left"
                     >
-                        ‹
+                        <HiChevronLeft className="text-xl text-gray-700" />
                     </button>
                     <button
                         onClick={() => scroll("right")}
-                        className="px-3 py-1 rounded bg-gray-200 hover:bg-gray-300 transition"
+                        className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 hover:bg-gray-400 shadow transition duration-200"
                         aria-label="Scroll right"
                     >
-                        ›
+                        <HiChevronRight className="text-xl text-gray-700" />
                     </button>
                 </div>
             </div>
@@ -44,15 +43,7 @@ const MovieSlider = ({ title, movies }: MovieSliderProps) => {
             >
                 {movies.map((movie) => (
                     <div key={movie.id} className="snap-start shrink-0 w-[180px]">
-                        <CardMovie
-                            id={movie.id}
-                            title={movie.title}
-                            release_date={movie.release_date}
-                            poster_path={movie.poster_path}
-                            vote_average={movie.vote_average}
-                            vote_count={movie.vote_count}
-                            genre_ids={movie.genre_ids || []}
-                        />
+                        <CardMovie key={movie.id} {...movie} />
                     </div>
                 ))}
             </div>

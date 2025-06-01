@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import Homepage from "./pages/home-page"
 import MovieDetailPage from "./pages/movie-detail-page"
 import AuthCallback from "./pages/AuthCallback"
-import FavoritePage from "./pages/FavoritePage"
+import FavoritePage from "./pages/favorite-page"
 import WatchlistPage from "./pages/WatchlistPage"
 import ProtectedRoute from "./pages/protected-route"
 
