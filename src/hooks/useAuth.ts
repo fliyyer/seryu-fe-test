@@ -43,12 +43,17 @@ export const useLogout = () => {
         mutationFn: async () => {
             const sessionId = localStorage.getItem("tmdb_session_id");
             if (!sessionId) throw new Error("No session ID found");
+
             await deleteSessionId(sessionId);
             localStorage.removeItem("tmdb_session_id");
+            queryClient.removeQueries();
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["session"] });
+            queryClient.invalidateQueries({ queryKey: ["favorite-movies"] });
+            queryClient.invalidateQueries({ queryKey: ["watchlist-movies"] });
             showSuccess("Logout successful");
+            window.location.reload();
         },
         onError: () => showError("Failed to logout"),
     });

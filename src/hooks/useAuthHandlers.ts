@@ -1,19 +1,24 @@
 import { useRequestToken, useLogout } from './useAuth';
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-
 export const useAuthHandlers = () => {
-    const { mutate: requestToken } = useRequestToken();
-    const { mutate: logout } = useLogout();
+    const requestToken = useRequestToken();
+    const logout = useLogout();
 
     const handleLogin = () => {
-        requestToken(undefined, {
+        requestToken.mutate(undefined, {
             onSuccess: (token) => {
-                window.location.href = `https://www.themoviedb.org/authenticate/${token}?redirect_to=${BASE_URL}/auth/callback`;
+                const url = `https://www.themoviedb.org/authenticate/${token}?redirect_to=${BASE_URL}/auth/callback`;
+                window.location.href = url;
             },
         });
     };
 
-    const handleLogout = () => logout();
+    const handleLogout = () => {
+        logout.mutate();
+    }
 
-    return { handleLogin, handleLogout };
+    return {
+        handleLogin,
+        handleLogout,
+    };
 };
