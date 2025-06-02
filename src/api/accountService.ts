@@ -1,37 +1,41 @@
 import { tmdb } from "./tmdb";
 
+const path = (subPath: string) => `/account/{account_id}${subPath}`;
+
+const withSession = (sessionId: string) => ({
+    params: { session_id: sessionId },
+});
+
 export const markAsFavorite = async (sessionId: string, mediaId: number, favorite: boolean) => {
-    const response = await tmdb.post(`/account/{account_id}/favorite`, {
-        media_type: "movie",
-        media_id: mediaId,
-        favorite,
-    }, {
-        params: { session_id: sessionId },
-    });
-    return response.data;
-}
+    const { data } = await tmdb.post(path('/favorite'),
+        {
+            media_type: 'movie',
+            media_id: mediaId,
+            favorite,
+        },
+        withSession(sessionId)
+    );
+    return data;
+};
 
 export const addToWatchlist = async (sessionId: string, mediaId: number, watchlist: boolean) => {
-    const response = await tmdb.post(`/account/{account_id}/watchlist`, {
-        media_type: "movie",
-        media_id: mediaId,
-        watchlist,
-    }, {
-        params: { session_id: sessionId },
-    });
-    return response.data;
+    const { data } = await tmdb.post(path('/watchlist'),
+        {
+            media_type: 'movie',
+            media_id: mediaId,
+            watchlist,
+        },
+        withSession(sessionId)
+    );
+    return data;
 }
 
 export const getFavoriteMovies = async (sessionId: string) => {
-    const response = await tmdb.get(`/account/{account_id}/favorite/movies`, {
-        params: { session_id: sessionId }
-    });
-    return response.data.results;
+    const { data } = await tmdb.get(path('/favorite/movies'), withSession(sessionId));
+    return data.results;
 };
 
 export const getWatchlistMovies = async (sessionId: string) => {
-    const response = await tmdb.get(`/account/{account_id}/watchlist/movies`, {
-        params: { session_id: sessionId }
-    });
-    return response.data.results;
+    const { data } = await tmdb.get(path('/watchlist/movies'), withSession(sessionId));
+    return data.results;
 };
