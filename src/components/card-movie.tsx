@@ -23,11 +23,11 @@ const CardMovie = ({
     return (
         <Link
             to={`/movie/${id}`}
-            className="block w-[250px] rounded-xl overflow-hidden shadow-lg group bg-white"
+            className="block w-[170px] md:w-[225px] lg:w-[250px] rounded-xl overflow-hidden shadow-lg group bg-white"
         >
             <div className="relative">
                 <img
-                    className="w-full h-[350px] object-cover"
+                    className="w-full h-[200px] md:h-[350px] object-cover"
                     src={`https://image.tmdb.org/t/p/w500${poster_path}`}
                     alt={title}
                 />

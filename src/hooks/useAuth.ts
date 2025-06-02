@@ -3,23 +3,12 @@ import { useEffect, useState } from "react";
 import { getRequestToken, createSessionId, deleteSessionId } from "../api/auth";
 import { showError, showSuccess } from "../lib/toast";
 
-export const useAuthStatus = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        const sessionId = localStorage.getItem("tmdb_session_id");
-        setIsAuthenticated(!!sessionId);
-        setIsLoading(false);
-    }, []);
-
-    return { isAuthenticated, isLoading };
-};
+const session = localStorage.getItem("tmdb_session_id");
 
 export const useRequestToken = () => {
     return useMutation({
         mutationFn: getRequestToken,
-        onError: () => showError("Gagal membuat token"),
+        onError: () => showError("Failed to get request token"),
     });
 };
 
@@ -31,9 +20,9 @@ export const useCreateSession = () => {
         onSuccess: (sessionId) => {
             localStorage.setItem("tmdb_session_id", sessionId);
             queryClient.invalidateQueries();
-            showSuccess("Login berhasil");
+            showSuccess("Logged in successfully");
         },
-        onError: () => showError("Gagal membuat sesi"),
+        onError: () => showError("Failed to create session"),
     });
 };
 
@@ -42,14 +31,14 @@ export const useLogout = () => {
 
     return useMutation({
         mutationFn: async () => {
-            const sessionId = localStorage.getItem("tmdb_session_id");
-            if (!sessionId) throw new Error("Tidak ada sesi");
+            const sessionId = session
+            if (!sessionId) throw new Error("No session ID found");
             await deleteSessionId(sessionId);
             localStorage.removeItem("tmdb_session_id");
         },
         onSuccess: () => {
             queryClient.invalidateQueries();
-            showSuccess("Logout berhasil");
+            showSuccess("Logout successful");
         },
         onError: () => showError("Gagal logout"),
     });
@@ -62,7 +51,7 @@ export const useAuthenticated = () => {
 
     useEffect(() => {
         const checkAuth = () => {
-            const sessionId = localStorage.getItem("tmdb_session_id");
+            const sessionId = session
             setIsAuthenticated(!!sessionId);
             setLoading(false);
         };

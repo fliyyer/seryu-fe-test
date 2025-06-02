@@ -6,19 +6,19 @@ const MovieHero = ({ movie }: { movie: GetMovie }) => (
         <div
             className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent pointer-events-none"
         />
-        <div className="relative z-10 flex items-end w-full max-w-7xl mx-auto p-6 lg:px-0 gap-6 text-white">
+        <div className="relative z-10 flex items-end w-full max-w-7xl mx-auto p-4 md:p-6 lg:px-4 2xl:px-0 gap-6 text-white">
             <img
-                className="w-48 md:w-64 rounded-lg shadow-lg"
+                className="w-32 md:w-48 lg:w-64 rounded-lg shadow-lg"
                 src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
                 alt={movie.title}
             />
             <div className="space-y-4">
-                <h1 className="text-3xl md:text-5xl font-bold">{movie.title}</h1>
+                <h1 className="text-xl md:text-3xl lg:text-5xl font-bold">{movie.title}</h1>
                 <div className="flex flex-wrap gap-4 text-sm text-gray-300">
                     <span className="flex items-center gap-1"><FaCalendarAlt /> {new Date(movie.release_date).getFullYear()}</span>
                 </div>
                 <p className="text-gray-200 max-w-2xl text-sm md:text-base line-clamp-3">{movie.overview}</p>
-                <div className="flex items-center gap-2 mt-2 text-yellow-400 text-lg font-semibold">
+                <div className="flex items-center gap-2 mt-2 text-yellow-400 text-sm md:text-lg font-semibold">
                     <FaStar />
                     <span>{movie.vote_average.toFixed(1)} / 10</span>
                 </div>

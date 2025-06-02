@@ -1,17 +1,14 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useEffect } from "react";
 import { useAuthenticated } from "../hooks/useAuth";
-import { toast } from "react-toastify";
+import { showError } from "../lib/toast";
 
 const ProtectedRoute = () => {
     const { isAuthenticated, loading } = useAuthenticated();
 
     useEffect(() => {
         if (!loading && !isAuthenticated) {
-            toast.error("You must log in to access this page.", {
-                position: "top-right",
-                autoClose: 2000,
-            });
+            showError("You must log in to access this page.");
         }
     }, [loading, isAuthenticated]);
 
