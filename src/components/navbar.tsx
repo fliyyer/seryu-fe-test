@@ -17,12 +17,15 @@ const Navbar = () => {
                         Cinema
                     </Link>
                     <div className="flex items-center gap-4">
-                        <Link to="/favorite" className="text-gray-700 hover:text-blue-600 font-medium">
-                            Favorite
-                        </Link>
-                        <Link to="/watchlist" className="text-gray-700 hover:text-blue-600 font-medium">
-                            Watchlist
-                        </Link>
+                        {["favorite", "watchlist"].map((path) => (
+                            <Link
+                                key={path}
+                                to={`/${path}`}
+                                className="text-gray-700 hover:text-blue-600 font-medium capitalize"
+                            >
+                                {path}
+                            </Link>
+                        ))}
                     </div>
                 </div>
                 <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">

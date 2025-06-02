@@ -3,8 +3,9 @@ import { Link } from 'react-router-dom';
 import Tmdb from '../assets/imdb.png';
 import Ceri from '../assets/ceri.png';
 import type { CardMovieProps } from '../types/movie';
-import { genreMap } from '../constant/genre';
 import { useFavoriteWatchlistActions } from '../hooks/useAccount';
+import ActionButton from './action-btn';
+import { formatGenres } from '../utils/formatGenres';
 
 const CardMovie = ({
     id,
@@ -18,8 +19,7 @@ const CardMovie = ({
     is_watchlist = false,
 }: CardMovieProps) => {
     const { handleFavorite, handleWatchlist } = useFavoriteWatchlistActions(id);
-    const genres = genre_ids.map(id => genreMap[id]).filter(Boolean).join(', ');
-
+    const genres = formatGenres(genre_ids);
     return (
         <Link
             to={`/movie/${id}`}
@@ -32,24 +32,26 @@ const CardMovie = ({
                     alt={title}
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex justify-center items-center gap-4 transition-opacity duration-300">
-                    <button
-                        className={`bg-white hover:bg-gray-200 text-red-600 p-2 rounded-full shadow`}
-                        onClick={(e) => {
-                            e.preventDefault();
-                            handleFavorite(!is_favorite);
-                        }}
-                    >
-                        {is_favorite ? <FaHeart size={18} /> : <FaRegHeart size={18} />}
-                    </button>
-                    <button
-                        className="bg-white hover:bg-gray-200 text-blue-600 p-2 rounded-full shadow"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            handleWatchlist(!is_watchlist);
-                        }}
-                    >
-                        {is_watchlist ? <FaBookmark size={18} /> : <FaRegBookmark size={18} />}
-                    </button>
+                    <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 flex justify-center items-center gap-4 transition-opacity duration-300">
+                        <ActionButton
+                            icon={is_favorite ? <FaHeart size={18} /> : <FaRegHeart size={18} />}
+                            colorClass="text-red-600"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleFavorite(!is_favorite);
+                            }}
+                            aria-label="Toggle Favorite"
+                        />
+                        <ActionButton
+                            icon={is_watchlist ? <FaBookmark size={18} /> : <FaRegBookmark size={18} />}
+                            colorClass="text-blue-600"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleWatchlist(!is_watchlist);
+                            }}
+                            aria-label="Toggle Watchlist"
+                        />
+                    </div>
                 </div>
             </div>
             <div className="p-4 flex flex-col justify-between h-[150px]">
