@@ -31,7 +31,7 @@ A modern movie browsing web application powered by [The Movie Database (TMDB)](h
 
 # Run Project
 ```
-git clone https://github.com/your-username/cinema-app.git
+git clone https://github.com/fliyyer/seryu-fe-test.git
 cd cinema-app
 
 Install dependencies
