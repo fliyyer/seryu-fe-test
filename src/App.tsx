@@ -5,6 +5,7 @@ import AuthCallback from "./pages/auth-callback"
 import FavoritePage from "./pages/favorite-page"
 import WatchlistPage from "./pages/watchlist-page"
 import ProtectedRoute from "./pages/protected-route"
+import NotFound from "./pages/not-found"
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
         element: <WatchlistPage />,
       },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   }
 ])
 
