@@ -1,9 +1,20 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { getRequestToken, createSessionId, deleteSessionId } from "../api/auth";
 import { showError, showSuccess } from "../lib/toast";
 
 const session = localStorage.getItem("tmdb_session_id");
+
+export const useSession = () => {
+    return useQuery({
+        queryKey: ["session"],
+        queryFn: () => {
+            const sessionId = localStorage.getItem("tmdb_session_id");
+            return sessionId;
+        },
+        staleTime: Infinity,
+    });
+};
 
 export const useRequestToken = () => {
     return useMutation({
@@ -19,8 +30,8 @@ export const useCreateSession = () => {
         mutationFn: createSessionId,
         onSuccess: (sessionId) => {
             localStorage.setItem("tmdb_session_id", sessionId);
-            queryClient.invalidateQueries();
-            showSuccess("Logged in successfully");
+            showSuccess("Login successful");
+            queryClient.invalidateQueries({ queryKey: ["session"] });
         },
         onError: () => showError("Failed to create session"),
     });
@@ -37,10 +48,10 @@ export const useLogout = () => {
             localStorage.removeItem("tmdb_session_id");
         },
         onSuccess: () => {
-            queryClient.invalidateQueries();
+            queryClient.invalidateQueries({ queryKey: ["session"] });
             showSuccess("Logout successful");
         },
-        onError: () => showError("Gagal logout"),
+        onError: () => showError("Failed to logout"),
     });
 };
 

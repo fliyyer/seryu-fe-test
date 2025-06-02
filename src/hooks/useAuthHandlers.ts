@@ -13,13 +13,9 @@ export const useAuthHandlers = () => {
         });
     };
 
-    const handleLogout = (onLogout?: () => void) => {
-        logout.mutate(undefined, {
-            onSuccess: () => {
-                if (onLogout) onLogout();
-            },
-        });
-    };
+    const handleLogout = () => {
+        logout.mutate();
+    }
 
     return {
         handleLogin,

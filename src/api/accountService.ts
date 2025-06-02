@@ -1,12 +1,5 @@
 import { tmdb } from "./tmdb";
 
-export const getAccountDetails = async (sessionId: string) => {
-    const response = await tmdb.get('/account', {
-        params: { session_id: sessionId },
-    });
-    return response.data;
-}
-
 export const markAsFavorite = async (sessionId: string, mediaId: number, favorite: boolean) => {
     const response = await tmdb.post(`/account/{account_id}/favorite`, {
         media_type: "movie",

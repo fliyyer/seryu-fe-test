@@ -1,26 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { showError, showSuccess } from "../lib/toast";
-import { addToWatchlist, getAccountDetails, getFavoriteMovies, getWatchlistMovies, markAsFavorite } from "../api/accountService";
+import { addToWatchlist, getFavoriteMovies, getWatchlistMovies, markAsFavorite } from "../api/accountService";
 import type { GetMovie } from "../types/movie";
 
-const sessionId = localStorage.getItem("tmdb_session_id");
-
-export const useAccount = () => {
-    return useQuery({
-        queryKey: ["account"],
-        queryFn: async () => {
-            if (!sessionId) throw new Error("No session ID");
-            return await getAccountDetails(sessionId);
-        },
-        enabled: !!sessionId,
-    });
-};
 
 export const useMarkAsFavorite = () => {
     const QueryClient = useQueryClient();
 
     return useMutation({
         mutationFn: async ({ media_id, favorite }: { media_id: number; favorite: boolean }) => {
+            const sessionId = localStorage.getItem("tmdb_session_id");
             if (!sessionId) throw new Error("No session ID");
             return await markAsFavorite(sessionId, media_id, favorite);
         },
@@ -41,6 +30,7 @@ export const useAddToWatchlist = () => {
 
     return useMutation({
         mutationFn: async ({ media_id, watchlist }: { media_id: number; watchlist: boolean }) => {
+            const sessionId = localStorage.getItem("tmdb_session_id");
             if (!sessionId) throw new Error("No session ID");
             return await addToWatchlist(sessionId, media_id, watchlist);
         },
@@ -57,6 +47,7 @@ export const useAddToWatchlist = () => {
 
 
 export const useGetFavoriteMovies = () => {
+    const sessionId = localStorage.getItem("tmdb_session_id");
     return useQuery({
         queryKey: ["favorite-movies"],
         queryFn: async () => {
@@ -68,6 +59,7 @@ export const useGetFavoriteMovies = () => {
 };
 
 export const useGetWatchlistMovies = () => {
+    const sessionId = localStorage.getItem("tmdb_session_id");
     return useQuery({
         queryKey: ["watchlist-movies"],
         queryFn: async () => {

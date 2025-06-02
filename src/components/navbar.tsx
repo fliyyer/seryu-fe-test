@@ -1,16 +1,13 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthHandlers } from '../hooks/useAuthHandlers';
 import SearchWithSuggestions from './search';
+import { useSession } from '../hooks/useAuth';
 
 const Navbar = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const { handleLogin, handleLogout } = useAuthHandlers();
 
-    useEffect(() => {
-        const session = localStorage.getItem("tmdb_session_id");
-        setIsLoggedIn(!!session);
-    }, []);
+    const { data: session } = useSession();
+    const isLoggedIn = !!session;
 
     return (
         <nav className="bg-white shadow sticky top-0 z-50">
@@ -34,7 +31,7 @@ const Navbar = () => {
                     </div>
                     {isLoggedIn ? (
                         <button
-                            onClick={() => handleLogout(() => setIsLoggedIn(false))}
+                            onClick={handleLogout}
                             className="bg-red-500 hover:bg-red-600 text-white px-4 py-2  rounded-md w-full md:w-auto"
                         >
                             Logout
