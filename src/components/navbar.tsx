@@ -16,17 +16,19 @@ const Navbar = () => {
                     <Link to="/" className="text-2xl uppercase font-bold text-blue-600">
                         Cinema
                     </Link>
-                    <div className="flex items-center gap-4">
-                        {["favorite", "watchlist"].map((path) => (
-                            <Link
-                                key={path}
-                                to={`/${path}`}
-                                className="text-gray-700 hover:text-blue-600 font-medium capitalize"
-                            >
-                                {path}
-                            </Link>
-                        ))}
-                    </div>
+                    {isLoggedIn &&
+                        <div className="flex items-center gap-4">
+                            {["favorite", "watchlist"].map((path) => (
+                                <Link
+                                    key={path}
+                                    to={`/${path}`}
+                                    className="text-gray-700 hover:text-blue-600 font-medium capitalize"
+                                >
+                                    {path}
+                                </Link>
+                            ))}
+                        </div>
+                    }
                 </div>
                 <div className="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
                     <div className="w-full md:w-64 mr-4">
