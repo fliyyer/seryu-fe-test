@@ -7,23 +7,26 @@ import {
     markAsFavorite
 } from "../api/accountService";
 import type { GetMovie } from "../types/movie";
-import { getSessionId } from "../utils/session";
 
 
 export const useMarkAsFavorite = () => {
-    const queryClient = useQueryClient();
+    const QueryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ media_id, favorite }: { media_id: number; favorite: boolean }) => {
-            const sessionId = getSessionId();
-            return markAsFavorite(sessionId, media_id, favorite);
+        mutationFn: async ({ media_id, favorite }: { media_id: number; favorite: boolean }) => {
+            const sessionId = localStorage.getItem("tmdb_session_id");
+            if (!sessionId) throw new Error("No session ID");
+            return await markAsFavorite(sessionId, media_id, favorite);
         },
-        onSuccess: (_data, { favorite }) => {
-            showSuccess(favorite ? "Added to favorites!" : "Removed from favorites!");
-            queryClient.invalidateQueries({ queryKey: ["favorite-movies"] });
+        onSuccess: (_data, variables) => {
+            const message = variables.favorite
+                ? "Added to favorites!"
+                : "Removed from favorites!";
+            showSuccess(message);
+            QueryClient.invalidateQueries({ queryKey: ["favorite-movies"] });
         },
         onError: () => showError("Please log in to change favorite list"),
-    });
+    })
 };
 
 
@@ -31,12 +34,16 @@ export const useAddToWatchlist = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ media_id, watchlist }: { media_id: number; watchlist: boolean }) => {
-            const sessionId = getSessionId();
-            return addToWatchlist(sessionId, media_id, watchlist);
+        mutationFn: async ({ media_id, watchlist }: { media_id: number; watchlist: boolean }) => {
+            const sessionId = localStorage.getItem("tmdb_session_id");
+            if (!sessionId) throw new Error("No session ID");
+            return await addToWatchlist(sessionId, media_id, watchlist);
         },
-        onSuccess: (_data, { watchlist }) => {
-            showSuccess(watchlist ? "Added to watchlist!" : "Removed from watchlist!");
+        onSuccess: (_data, variables) => {
+            const message = variables.watchlist
+                ? "Added to watchlist!"
+                : "Removed from watchlist!";
+            showSuccess(message);
             queryClient.invalidateQueries({ queryKey: ["watchlist-movies"] });
         },
         onError: () => showError("Please log in to change watchlist"),

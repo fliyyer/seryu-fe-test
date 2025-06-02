@@ -2,13 +2,15 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { getRequestToken, createSessionId, deleteSessionId } from "../api/auth";
 import { showError, showSuccess } from "../lib/toast";
-import { getSessionId } from "../utils/session";
 
 
 export const useSession = () => {
     return useQuery({
         queryKey: ["session"],
-        queryFn: () => getSessionId(),
+        queryFn: () => {
+            const sessionId = localStorage.getItem("tmdb_session_id");
+            return sessionId;
+        },
         staleTime: Infinity,
     });
 };
@@ -39,8 +41,8 @@ export const useLogout = () => {
 
     return useMutation({
         mutationFn: async () => {
-            const sessionId = getSessionId();
-            if (!sessionId) throw new Error("No session ID");
+            const sessionId = localStorage.getItem("tmdb_session_id");
+            if (!sessionId) throw new Error("No session ID found");
             await deleteSessionId(sessionId);
             localStorage.removeItem("tmdb_session_id");
         },
@@ -52,19 +54,26 @@ export const useLogout = () => {
     });
 };
 
+
 export const useAuthenticated = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const check = () => {
-            setIsAuthenticated(!!getSessionId());
+        const checkAuth = () => {
+            const sessionId = localStorage.getItem("tmdb_session_id");
+            setIsAuthenticated(!!sessionId);
             setLoading(false);
         };
 
-        check();
-        window.addEventListener("storage", check);
-        return () => window.removeEventListener("storage", check);
+        checkAuth();
+
+        const handleStorageChange = () => checkAuth();
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
     }, []);
 
     return { isAuthenticated, loading };
